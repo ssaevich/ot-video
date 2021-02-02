@@ -55,6 +55,16 @@ var token;
         publisher.on('destroyed', () => {
           video.pause();
         });
+
+        session.connect(token, function callback(error) {
+          debugger
+          if (error) {
+            handleError(error);
+          } else {
+            // If the connection is successful, publish the publisher to the session
+            session.publish(publisher, handleError);
+          }
+        })
         
       }
     }
@@ -73,13 +83,7 @@ var token;
     }); */
   
   
-  // See the config.js file.
-  if (API_KEY && TOKEN && SESSION_ID) {
-    apiKey = API_KEY;
-    sessionId = SESSION_ID;
-    token = TOKEN;
-    initializeSession();
-  } else if (SAMPLE_SERVER_BASE_URL) {
+
     // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
     fetch('https://opentok-web-samples-backend.herokuapp.com' + '/session').then(function fetch(res) {
       return res.json();
@@ -93,6 +97,6 @@ var token;
       handleError(error);
       alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
     });
-  }
+  
   
 })()
