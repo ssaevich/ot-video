@@ -56,6 +56,25 @@ var token;
           video.pause();
         });
 
+
+        var session = OT.initSession(apiKey, sessionId);
+  
+        // Subscribe to a newly created stream
+        session.on('streamCreated', function streamCreated(event) {
+          var subscriberOptions = {
+            insertMode: 'append',
+            width: '100%',
+            height: '100%'
+          };
+          session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
+        });
+      
+        session.on('sessionDisconnected', function sessionDisconnected(event) {
+          console.log('You were disconnected from the session.', event.reason);
+        })
+
+
+
         session.connect(token, function callback(error) {
           debugger
           if (error) {
