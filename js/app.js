@@ -2,7 +2,21 @@
 var apiKey;
 var sessionId;
 var token;
-(function clojure() {
+
+// Make an Ajax request to get the OpenTok API key, session ID, and token from the server
+fetch('https://opentok-web-samples-backend.herokuapp.com' + '/session').then(function fetch(res) {
+  return res.json();
+}).then(function fetchJson(json) {
+  apiKey = json.apiKey;
+  sessionId = json.sessionId;
+  token = json.token;
+  init();
+}).catch(function catchErr(error) {
+  handleError(error);
+  alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
+});
+
+function init() {
   const video = document.querySelector('#video');
   const stream = video.captureStream();
   stream.addEventListener('addtrack', publish);
@@ -52,7 +66,6 @@ var token;
       })
 
       session.connect(token, function callback(error) {
-        debugger
         if (error) {
           handleError(error);
         } else {
@@ -64,15 +77,5 @@ var token;
     }
   }
 
-  // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
-  fetch('https://opentok-web-samples-backend.herokuapp.com' + '/session').then(function fetch(res) {
-    return res.json();
-  }).then(function fetchJson(json) {
-    apiKey = json.apiKey;
-    sessionId = json.sessionId;
-    token = json.token;
-  }).catch(function catchErr(error) {
-    handleError(error);
-    alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
-  });
-})()
+
+}
